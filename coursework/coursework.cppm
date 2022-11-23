@@ -1,4 +1,5 @@
-﻿import <iostream>;
+﻿#include <Windows.h>
+import <iostream>;
 import <string>;
 import <fstream>;
 import <conio.h>;
@@ -12,10 +13,13 @@ import pArrFunc;
 
 int main()
 {
+	//setlocale(LC_ALL, "rus");
     using namespace std;
 	using namespace List;
 	using namespace pArrFunc;
-    setlocale(LC_ALL, "rus");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+    
 
 	/*Node<string>** pArray = nullptr;
     
@@ -30,21 +34,23 @@ int main()
 	}
 	delete[] pArray;*/
 
-	//Node<string>* arr = nullptr;
-	//arr = new Node<string>[arrSize]; // инициализирование динамического массива Node
-	//for (int i = 0; i < arrSize; ++i) {
-	//	//cout << arr[i];
-	//	// считывание в массив из файла
+	Node<string>** arr = nullptr;
+	arr = new Node<string>*[arrSize]; // инициализирование динамического массива Node
+	for (int i = 0; i < arrSize; ++i) {
+		arr[i] = new Node<string>;
+		cout << arr[i];
+		// считывание в массив из файла
+	}
+	//for (int i = 0; i < arrSize; ++i) { // освобождения элементов динамического массива Node
+	//	delete arr[i];
 	//}
-
-	//delete[] arr;
-	/*Test<string> t("dfdf");
-	cout << t;*/
+	//delete[] arr; // освобождения динамического массива Node
+	
 
 	/*Node<string> node1{ "Строка 1" };
 	cout << node1;*/
 	
-	Node<string>* node1 = new Node<string>{ "Строка 1" };
+	/*Node<string>* node1 = new Node<string>{ "Строка 1" };
 	Node<string>* node2 = new Node<string>{ "Строка 2" };
 	addAtEndList(node1, node2);
 	Node<string>* node3 = new Node<string>{ "Строка 3" };
@@ -53,12 +59,14 @@ int main()
 	addAtEndList(node1, node4);
 	unsigned int id = 0;
 	showList(node1, id);
-	cout << id;
+	cout << id;*/
+
+	//Node<string>* head = nullptr;
 
 	int ch = 0;
 	while (ch != 27) {
 		system("cls");
-		//printMenu();
+		showArr(arr);
 		cout << "0 - загрузка строк из txt(ANSI) файла" << endl;
 		cout << "1 - сохранение строк в txt(ANSI) файл" << endl;
 		cout << "2 - загрузка строк из бинарного файла" << endl;
@@ -78,10 +86,12 @@ int main()
 		{
 		case 48: // 0
 		{
+			readFromTxtANSI(arr);
 			break;
 		}
 		case 49: // 1
 		{
+			writeToTxtANSI(arr);
 			break;
 		}
 		case 50: // 2
@@ -94,6 +104,7 @@ int main()
 		}
 		case 52: // 4
 		{
+			addAtArr(arr);
 			break;
 		}
 		case 53: // 5
@@ -108,8 +119,11 @@ int main()
 			break;
 		}
 		system("pause");
+	}    
+	for (int i = 0; i < arrSize; ++i) { // освобождения элементов динамического массива Node
+		delete arr[i];
 	}
-    
+	delete[] arr; // освобождения динамического массива Node
 
     //cout << node1->getStr() << endl;
     //Node<string> node1{ "Строка" };

@@ -1,55 +1,41 @@
 export module list;
+
 import <iostream>;
 import <string>;
 
 export namespace List {
     using namespace std;
-    const unsigned int COUNT_NODE = 5; // стандартное количество узлов в списке
+    //setlocale(LC_ALL, "rus");
+    const unsigned int COUNT_NODE = 2; // стандартное количество узлов в списке
 
-    //template <typename U> class Test;
-    //template <typename U> std::ostream& operator<<(std::ostream&, const Test<U>&);
-    //template <typename U>
-    //class Test {
-    //    U d_;
-    //    friend std::ostream& operator<< <U>(std::ostream&, const Test<U>&);
-    //public:
-    //    Test(U d) : d_{ d } { }
-    //};
-    //// Implement the operator
-    //template <typename U>
-    //std::ostream& operator<<(std::ostream& o, const Test<U>& t) {
-    //    o << "DDD: ";
-    //    return o;
-    //}
+
 
     template <class T> class Node;
     template <class T> ostream& operator<<(ostream&, const Node<T>&);
-    template <class T> ostream& operator<<(ostream&, const Node<T>*);
-    template <class T>
-    class Node {
+    template <class T> ostream& operator>>(ostream&, const Node<T>*);
+    template <class T> istream& operator>>(istream&, Node<T>*);
+    template <class T> class Node {
     private:
         T str_;
         Node* next_;
-        friend ostream& operator<< <T>(std::ostream&, const Node<T>&);
-        friend ostream& operator<< <T>(std::ostream&, const Node<T>*);
+        friend ostream& operator<< <T>(ostream&, const Node<T>&);
+        friend ostream& operator<< <T>(ostream&, const Node<T>*);
+        friend istream& operator>> <T>(istream&, Node<T>*);
     public:        
         Node() : next_{ nullptr } { }
         Node(T str) : str_{ str }, next_{ nullptr } { }                
         const T getStr() const;
+        void setStr(T str);
         Node<T>* getNext() const;
-        void setNext(Node<T>* newNode);
-        
-        
+        void setNext(Node<T>* newNode);      
+                
     };
+    void insertNodeAtEnd(Node<string>** head, const unsigned int insertId, Node<string>* newNode);
+    bool showList(Node<string>* node, unsigned int& id);
+
     template <class T>
     ostream& operator<< (ostream& out, const Node<T>& obj) {
         out << "str_: " << obj.str_ << endl;
-        /*if (obj.next_ == nullptr) {
-            out << "next_: " << "nullptr" << endl;
-        }
-        else {
-            out << "next_: " << obj.next_ << endl;
-        }*/
         return out;
     }
     template <class T>
@@ -64,25 +50,19 @@ export namespace List {
         }
         return out;
     }
-    /*template <class T>
-    ostream& operator<<(ostream& out, const Node<T>& obj) {
-        if (obj == nullptr) {
-            out << "Объект не инициализирован: nullptr" << endl;
-        }
-        else {
-            out << "str_: " << obj.getStr() << endl;
-            if (obj.getNext() == nullptr) {
-                out << "next_: " << "nullptr" << endl;
-            }
-            else {
-                out << "next_: " << obj.getNext() << endl;
-            }
-        }
-    }*/
-
+    template <class T> istream& operator>>(istream& in, Node<T>* obj) {
+        T str;
+        getline(in, str);
+        obj->setStr(str);
+        return in;
+    }
     template <class T>
     const T Node<T>::getStr() const {
         return str_;
+    }
+    template <class T>
+    void Node<T>::setStr(T str) {
+        str_ = str;
     }
     template <class T>
     Node<T>* Node<T>::getNext() const {
@@ -93,18 +73,43 @@ export namespace List {
         next_ = newNode;
     }
 
-    void showList(Node<string>* node, unsigned int& id) {
+    bool showList(Node<string>* node, unsigned int& id) {
+        bool hit = false;
         while (node != nullptr) {
-            cout << "id: " << id++ << endl;
-            cout << node;
-            //cout << node->getStr() << endl;
+            if (!node->getStr().empty()) {
+                hit = true;
+                cout << "id: " << id++ << endl;
+                cout << node;
+                //cout << node->getStr() << endl;
+            }            
             node = node->getNext();
         }
+        return hit;
     }
-    void addAtEndList(Node<string>* list, Node<string>* newNode) {
-        while (list->getNext() != nullptr) {
-            list = list->getNext();
+
+    void insertNodeAtEnd(Node<string>** head, const unsigned int insertId, Node<string>* newNode) {
+        if (head[insertId]->getStr().empty()) {
+            Node<string>* tmp = head[insertId];
+            head[insertId] = newNode;
+            delete tmp;
+            return;
         }
-        list->setNext(newNode);
+        Node<string>* tmp = head[insertId];
+        while (tmp->getNext() != nullptr) {
+            tmp = tmp->getNext();
+        }
+        tmp->setNext(newNode);
+    }
+
+    bool possibleInsert(Node<string>* head) {
+        unsigned int counter = 1;
+        while (head->getNext() != nullptr) {
+            counter++;
+            if (counter >= COUNT_NODE) {
+                return false;
+            }
+            head = head->getNext();
+        }
+        return true;
     }
 }
