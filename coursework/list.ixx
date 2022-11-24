@@ -31,7 +31,10 @@ export namespace List {
                 
     };
     void insertNodeAtEnd(Node<string>** head, const unsigned int insertId, Node<string>* newNode);
+    unsigned int insertNodeAtEnd(Node<string>* nowNode);
     bool showList(Node<string>* node, unsigned int& id);
+    bool possibleInsert(Node<string>* head);
+    bool possibleDel(Node<string>* head);
 
     template <class T>
     ostream& operator<< (ostream& out, const Node<T>& obj) {
@@ -52,6 +55,11 @@ export namespace List {
     }
     template <class T> istream& operator>>(istream& in, Node<T>* obj) {
         T str;
+        if (!in) {
+            in.ignore(numeric_limits<streamsize>::max(), '\n'); //Выкидываем все что ввел пользователь до конца строки
+            in.clear();  //Убираем флаг ошибки. Теперь состояние потока снова good
+            //throw exception("Ошибка, введённая строка не может быть преобразована в int");
+        }
         getline(in, str);
         obj->setStr(str);
         return in;
@@ -73,7 +81,7 @@ export namespace List {
         next_ = newNode;
     }
 
-    bool showList(Node<string>* node, unsigned int& id) {
+    bool showList(Node<string>* node, unsigned int& id) { // выводит список
         bool hit = false;
         while (node != nullptr) {
             if (!node->getStr().empty()) {
@@ -87,7 +95,7 @@ export namespace List {
         return hit;
     }
 
-    void insertNodeAtEnd(Node<string>** head, const unsigned int insertId, Node<string>* newNode) {
+    void insertNodeAtEnd(Node<string>** head, const unsigned int insertId, Node<string>* newNode) { // добавляет узел в конец списка
         if (head[insertId]->getStr().empty()) {
             Node<string>* tmp = head[insertId];
             head[insertId] = newNode;
@@ -101,7 +109,51 @@ export namespace List {
         tmp->setNext(newNode);
     }
 
-    bool possibleInsert(Node<string>* head) {
+    bool insertNodeById(Node<string>** head, int listtId, const unsigned int insertId, unsigned int& nowId, Node<string>* newNode) { // добавляет узел в конец списка
+        if (listtId > 0) { nowId++; }
+        if (insertId == nowId) {
+            newNode->setNext(head[listtId]);
+            head[listtId] = newNode;
+            return true;
+        }
+
+        
+        Node<string>* tmp = head[listtId]; Node<string>* prev = head[listtId];
+        while (tmp->getNext() != nullptr) {
+            prev = tmp;
+            tmp = tmp->getNext();
+            nowId++;
+            if (nowId == insertId) {
+                prev->setNext(newNode);
+                newNode->setNext(tmp);
+                return true;
+            }
+
+        }
+        return false;
+        
+    }
+
+    unsigned int delLastNode(Node<string>* nowNode) {
+        unsigned int counter = 1;
+        Node<string>* tmp = nowNode;
+        Node<string>* prev = nowNode;
+        while (tmp->getNext() != nullptr) {
+            counter++;
+            prev = tmp;
+            tmp = tmp->getNext();
+        }
+        if (counter <= 1) {
+            if (!tmp->getStr().empty()) {
+                tmp->setStr("");
+            }
+        } else {
+            prev->setNext(nullptr);
+            delete tmp;
+        }
+        return counter;
+    }
+    bool possibleInsert(Node<string>* head) { // если в списке количество элементов больше или равно COUNT_NODE возвращает false иначе true
         unsigned int counter = 1;
         while (head->getNext() != nullptr) {
             counter++;
@@ -111,5 +163,12 @@ export namespace List {
             head = head->getNext();
         }
         return true;
+    }
+
+    bool possibleDel(Node<string>* head) {
+        if (head != nullptr && !head->getStr().empty()) {
+            return true;
+        }       
+        return false;
     }
 }

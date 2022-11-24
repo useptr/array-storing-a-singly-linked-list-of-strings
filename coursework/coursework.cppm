@@ -109,10 +109,12 @@ int main()
 		}
 		case 53: // 5
 		{
+			delInArr(arr);
 			break;
 		}
 		case 54: // 6
 		{
+			addInArrById(arr);
 			break;
 		}
 		default:

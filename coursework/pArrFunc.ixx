@@ -11,7 +11,11 @@ export namespace pArrFunc {
     unsigned int possibleInsertList = 0;
 
     void addAtArr(Node<string>** &arr);
+    void resizeArr(Node<string>**& arr);
     void showArr(Node<string>** arr);
+    void writeToTxtANSI(Node<string>** arr);
+    void readFromTxtANSI(Node<string>**& arr);
+    void delInArr(Node<string>** arr);
 
     void resizeArr(Node<string>** &arr)
     {
@@ -45,20 +49,74 @@ export namespace pArrFunc {
             }
             insertNodeAtEnd(arr, possibleInsertList, newNode);
         }        
-    }    
+    }   
+    void addInArrById(Node<string>**& arr) {
+        Node<string>* newNode = new Node<string>;
+        cout << "Введите str_: ";
+        cin >> newNode;
+
+        unsigned int insertId = 0; unsigned int nowId = 0;
+        cout << "Введите id: ";
+        cin >> insertId;
+        cin.ignore();
+
+        for (int i = 0; i <= possibleInsertList; ++i) {
+            if (insertNodeById(arr, i, insertId, nowId, newNode)) {
+                return;
+            }
+        }
+        if (insertId == nowId + 1) {
+            if (possibleInsert(arr[possibleInsertList])) {
+                insertNodeAtEnd(arr, possibleInsertList, newNode);
+            }
+            else {
+                possibleInsertList++;
+                if (possibleInsertList >= arrSize) { // хватает ли динамического массива
+                    resizeArr(arr); // ресайз
+                }
+                insertNodeAtEnd(arr, possibleInsertList, newNode);
+            }
+        }
+        else {
+            cout << "id должен быть не меньше 0 и не больше " << nowId + 1 << endl;
+        }
+
+    }
+    void delInArr(Node<string>** arr) {
+        if (possibleDel(arr[possibleInsertList])) { // возможно ли удалить
+            int res = delLastNode(arr[possibleInsertList]);
+            if (res == 1 && possibleInsertList >= 1) { // если мы удалили первый элемент списка, то уменьшаем possibleInsertList
+                possibleInsertList--;
+            }
+        } else {
+            if (possibleInsertList >= 1) { // если удалять в текущем списке нечего, то уменьшаем possibleInsertList
+                possibleInsertList--;
+                int res = delLastNode(arr[possibleInsertList]);
+            } else { // если уменьшать possibleInsertList уже нельзя
+                if (possibleDel(arr[possibleInsertList])) {
+                    int res = delLastNode(arr[possibleInsertList]);
+                }
+                else {
+                    cout << "Нечего удалять" << endl;
+                }
+            }
+        }
+    }
+    
     void showArr(Node<string>** arr) {
         unsigned int id = 0;
         for (int i = 0; i < arrSize; ++i) {
             if (showList(arr[i], id)) {
-                cout << "- - - - - - - - - -" << endl; // граница списка
+                cout << endl;
+                //cout << "- - - - - - - - - -" << endl; // граница списка
             }            
         }
     }
-
     void writeToTxtANSI(Node<string>** arr) {
         string fName;
         cout << "Введие имя файла: ";
         cin >> fName;
+        cin.ignore();
         int length = fName.length();
         if (length - 4 > 0) {
             string fileExtension = fName.substr(fName.length() - 4, fName.length());
@@ -96,6 +154,7 @@ export namespace pArrFunc {
         string fName, tmp;
         cout << "Введие имя файла: ";
         cin >> fName;
+        cin.ignore();
         int length = fName.length();
         if (length - 4 > 0) {
             string fileExtension = fName.substr(fName.length() - 4, fName.length());
