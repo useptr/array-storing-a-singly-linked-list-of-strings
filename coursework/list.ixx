@@ -133,7 +133,36 @@ export namespace List {
         return false;
         
     }
+    bool delNodeById(Node<string>** head, const int listtId, const unsigned int delId, unsigned int& nowId) {
+        if (listtId > 0) { nowId++; }
 
+        if (delId == nowId) {
+            if (head[listtId]->getNext() == nullptr) {
+                if (!head[listtId]->getStr().empty()) {
+                    head[listtId]->setStr("");
+                }
+            } else {
+                Node<string>* tmp = head[listtId]->getNext();
+                delete head[listtId];
+                head[listtId] = tmp;
+            }
+            return true;
+        }
+
+        Node<string>* tmp = head[listtId];
+        Node<string>* prev = head[listtId];
+        while (tmp->getNext() != nullptr) {
+            nowId++;
+            prev = tmp;
+            tmp = tmp->getNext();
+            if (delId == nowId) {
+                prev->setNext(tmp->getNext());
+                delete tmp;
+                break;
+            }
+        }
+
+    }
     unsigned int delLastNode(Node<string>* nowNode) {
         unsigned int counter = 1;
         Node<string>* tmp = nowNode;

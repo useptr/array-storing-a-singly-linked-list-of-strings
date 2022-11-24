@@ -70,13 +70,15 @@ int main()
 		cout << "0 - загрузка строк из txt(ANSI) файла" << endl;
 		cout << "1 - сохранение строк в txt(ANSI) файл" << endl;
 		cout << "2 - загрузка строк из бинарного файла" << endl;
-		cout << "3 - сохранение строк в бинарный файл" << endl;
+		cout << "3 - сохранение строк в бинарный файл" << endl; 
 		cout << "4 - добавить строку" << endl;
 		cout << "5 - удалить строку" << endl;
 		cout << "6 - включение строки по логическому номеру" << endl;
-		cout << "7 - включение строки по логическому номеру с сохранением порядка" << endl;
+		cout << "7 - включение строки по логическому номеру с сохранением порядка" << endl; //
 		cout << "8 - извлечение строки по логическому номеру" << endl;
-		cout << "9 - сортировка всей структуры" << endl;
+		cout << "9 - сортировка" << endl; //
+		cout << "b - балансировка " << endl;
+		cout << "p - вывод по n" << endl;
 		//балансировка
 		
 		cout << "Esc - выход" << endl;
@@ -96,10 +98,12 @@ int main()
 		}
 		case 50: // 2
 		{
+			readFromBin(arr);
 			break;
 		}
 		case 51: // 3
 		{
+			writeToBin(arr);
 			break;
 		}
 		case 52: // 4
@@ -117,6 +121,31 @@ int main()
 			addInArrById(arr);
 			break;
 		}
+		case 55: // 7
+		{
+			addInArrByIdWithOrder(arr);
+			break;
+		}
+		case 56: // 8
+		{
+			delInArrById(arr);
+			break;
+		}
+		case 57: // 9
+		{
+			
+			break;
+		} 
+		case 98: // b
+		{
+			balanceArr(arr);
+			break;
+		}
+		case 112: // p
+		{
+			showArrByN(arr);
+			break;
+		}		
 		default:
 			break;
 		}

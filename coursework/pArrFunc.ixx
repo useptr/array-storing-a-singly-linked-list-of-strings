@@ -16,6 +16,8 @@ export namespace pArrFunc {
     void writeToTxtANSI(Node<string>** arr);
     void readFromTxtANSI(Node<string>**& arr);
     void delInArr(Node<string>** arr);
+    void addInArrById(Node<string>**& arr);
+    void balanceArr(Node<string>**& arr);
 
     void resizeArr(Node<string>** &arr)
     {
@@ -35,6 +37,44 @@ export namespace pArrFunc {
         arrSize *= 2;
     }
 
+    void balanceArr(Node<string>**& arr) {
+        // fix два последних по одному
+        int i = 0;
+        while (!possibleInsert(arr[i])) { 
+            if (i + 1 >= arrSize) { // хватает ли динамического массива
+                resizeArr(arr); // ресайз
+                possibleInsertList++;
+            }
+
+            unsigned int counter = 1;
+            Node<string>* tmp = arr[i];
+            Node<string>* prev = tmp;
+            while (tmp->getNext() != nullptr) {
+                counter++;
+                prev = tmp;
+                tmp = tmp->getNext();
+                if (counter > List::COUNT_NODE) { // все лишние узлы перемещаем в начало следуещего списка
+                    prev->setNext(nullptr); // узлы по счЄту равному COUNT_NODE обнул€ем указатель
+                    Node<string>* tmpHead = new Node<string>;
+                    if (i + 1 >= arrSize) { // хватает ли динамического массива
+                        resizeArr(arr); // ресайз
+                        possibleInsertList++;
+                    }
+                    tmpHead = arr[i + 1];
+                    arr[i + 1] = tmp;
+                    while (tmp->getNext() != nullptr) { // идЄм до самого последнего лишнего узла
+                        prev = tmp;
+                        tmp = tmp->getNext();
+                    }
+                    tmp->setNext(tmpHead); // устанавливаем самому последнему лишнему узлу next_ = tmpHead (arr[i+1])
+
+                    break;
+                }
+
+            }
+            i++;
+        }
+    }
     void addAtArr(Node<string>** &arr) {
         Node<string>* newNode = new Node<string>;
         cout << "¬ведите str_: ";
@@ -50,6 +90,111 @@ export namespace pArrFunc {
             insertNodeAtEnd(arr, possibleInsertList, newNode);
         }        
     }   
+    void addInArrByIdWithOrder(Node<string>**& arr) {
+        //Node<string>* newNode = new Node<string>;
+        //cout << "¬ведите str_: ";
+        //cin >> newNode;
+        //unsigned int insertId = 0; unsigned int nowId = 0;
+        //cout << "¬ведите id: ";
+        //cin >> insertId;
+        //cin.ignore(); // разрешени€ конфликта cin и getline
+        //// вставл€ем новый узел, сдвигаем всю структуру
+
+        //int i = 0;
+        //while (!possibleInsert(arr[i])) { // цикл по заголовкам списков
+        //    if (i > 0) { nowId++; }
+        //    if (i + 1 >= arrSize) { // хватает ли динамического массива
+        //        resizeArr(arr); // ресайз
+        //        possibleInsertList++;
+        //    }
+
+        //    Node<string>* tmp = arr[i];
+        //    Node<string>* prev = tmp;
+        //    while (tmp->getNext() != nullptr) { // цикл по спискам
+        //        prev = tmp;
+        //        tmp = tmp->getNext();
+        //        nowId++;
+        //        if (nowId == insertId) {
+        //            prev->setNext(nowId);
+        //            if (tmp->getNext() == nullptr) {
+        //                // сместить ниже                        
+        //                Node<string>* tmpHead = new Node<string>;
+        //                tmpHead = arr[i + 1];
+        //                tmp->setNext(tmpHead);
+        //                arr[i + 1] = tmp;
+        //            } else {
+
+        //            }
+        //            //insertNodeById(arr, i, insertId, nowId, newNode);
+        //            for (int j = i; j <= possibleInsertList; ++j) { // сдвигаем всЄ
+        //                
+
+        //            }
+        //            
+        //            return;                    
+        //        }
+        //    }
+
+        //}
+
+        //if (insertId == nowId + 1) { // дошли до последнего используемого списка
+        //    if (possibleInsert(arr[possibleInsertList])) {
+        //        insertNodeAtEnd(arr, possibleInsertList, newNode);
+        //    }
+        //    else {
+        //        possibleInsertList++;
+        //        if (possibleInsertList >= arrSize) { // хватает ли динамического массива
+        //            resizeArr(arr); // ресайз
+        //        }
+        //        insertNodeAtEnd(arr, possibleInsertList, newNode);
+        //    }
+        //}
+        //else {
+        //    cout << "id должен быть не меньше 0 и не больше " << nowId + 1 << endl;
+        //}
+    }
+    void delInArrById(Node<string>** &arr) {
+        unsigned int delId = 0; unsigned int nowId = 0;
+        cout << "¬ведите id: ";
+        cin >> delId;
+        cin.ignore(); // разрешени€ конфликта cin и getline
+        int i = 0;
+        for (i; i < possibleInsertList; ++i) {
+            if (delNodeById(arr, i, delId, nowId)) { // удалось ли удалить узел с id = delId
+                if (arr[i]->getNext() == nullptr && arr[i]->getStr().empty()) { // если мы удалили первый узел в списке
+                    if (!arr[i + 1]->getStr().empty() || arr[i + 1]->getNext() != nullptr) { // если в следующих списках есть не пустые узлы, сдвигаем списоки
+                        int j = 0;
+                        for (j = i; j <= possibleInsertList; j++) {
+                            arr[j] = arr[j + 1];
+                        }
+                        /*j++;
+                        if (j < arrSize) {
+                            arr[j]->setNext(nullptr);
+                            arr[j]->setStr("");
+                        } */                       
+                        
+                        possibleInsertList--;
+                    }
+                }
+                return;
+            }
+            
+        }
+
+        if (i == possibleInsertList) { // есть ли что-то в последнем списке
+            if (possibleDel(arr[i])) {
+                // удалить, сдвинуть список, уменьшить possibleInsertList если удалили первй узел списка
+                if (delNodeById(arr, i, delId, nowId)) {
+                    if (arr[i]->getNext() == nullptr && arr[i]->getStr().empty()) { // если мы удалили первый узел в списке, сдвигать ничего не нужно так как i == possibleInsertList(последнему используемому списку)
+                        possibleInsertList--;
+                    }
+                    return;
+                }                
+            }
+        }
+        cout << "id должен быть не меньше 0 и не больше " << nowId+1 << endl;
+    }
+
     void addInArrById(Node<string>**& arr) {
         Node<string>* newNode = new Node<string>;
         cout << "¬ведите str_: ";
@@ -111,6 +256,131 @@ export namespace pArrFunc {
                 //cout << "- - - - - - - - - -" << endl; // граница списка
             }            
         }
+    }
+    void showArrByN(Node<string>** arr) {
+        unsigned int n;
+        cout << "¬ведите какое количество строк вы хотите выводить за раз: ";
+        cin >> n;
+        cin.ignore();
+
+        unsigned int id = 0, counter = 0;
+        for (int i = 0; i < arrSize; ++i) {
+            if (arr[i]->getStr().empty() && arr[i]->getNext() == nullptr) { continue;  }
+            Node<string>* node = arr[i];
+            while (node != nullptr) {
+                if (!node->getStr().empty()) {
+                    cout << "id: " << id++ << endl;
+                    cout << node;
+                }
+                node = node->getNext();
+
+                counter++;
+                if (counter == n) {
+                    counter = 0;
+                    cout << "Ќажмите любую клавишу чтобы продолжить, или Esc чтобы выйти из функции" << endl;
+                    int ch = 0;
+                    ch = _getch();
+                    if (ch==27) { return; }
+                }
+            }
+            cout << endl;
+        }
+    }
+    void writeToBin(Node<string>** arr) {
+        string fName;
+        cout << "¬ведие им€ файла: ";
+        cin >> fName;
+        cin.ignore();
+        int length = fName.length();
+        if (length - 4 > 0) {
+            string fileExtension = fName.substr(fName.length() - 4, fName.length());
+            if (fileExtension.find(".dat") == string::npos) {
+                fName += ".dat";
+            }
+        }
+        else {
+            fName += ".dat";
+        }
+        
+        ofstream fout(fName, ofstream::binary | ios::out);  
+        if (!fout.is_open())
+        {
+            cout << "‘айл не может быть открыт или создан"; // throw
+            return;
+        }
+        
+        for (int i = 0; i < arrSize; ++i) {
+            if (arr[i]->getStr().empty() && arr[i]->getNext() == nullptr) { continue; }
+
+            Node<string>* node = arr[i];
+            while (node != nullptr) {
+                if (!node->getStr().empty()) {
+                    //cout << node;
+                    string text = node->getStr();
+                    int size = (text.size());
+                    fout.write(reinterpret_cast<char*>(&size), sizeof(int));
+                    fout.write(text.c_str(), size);
+                }
+                node = node->getNext();
+
+            }
+            //cout << endl;
+        }
+        fout.flush();
+        fout.close();
+    }
+    void readFromBin(Node<string>**& arr) {
+        string fName, tmp;
+        cout << "¬ведие им€ файла: ";
+        cin >> fName;
+        cin.ignore();
+        int length = fName.length();
+        if (length - 4 > 0) {
+            string fileExtension = fName.substr(fName.length() - 4, fName.length());
+            if (fileExtension.find(".dat") == string::npos) { //
+                fName += ".dat";
+            }
+        }
+        else {
+            fName += ".dat";
+        }
+
+        ifstream fin(fName, ios::in | ios::binary);
+        if (!fin.is_open())
+        {
+            cout << "‘айл не может быть открыт или создан"; // throw
+            return;
+        }
+
+        while (!fin.eof()) {
+
+
+            int size;
+            fin.read(reinterpret_cast<char*>(&size), sizeof(int));
+            char* buf = new char[size];
+            fin.read(buf, size);
+            tmp = "";
+            tmp.append(buf, size);
+            delete[] buf;
+            if (!tmp.empty()) {
+                //cout << tmp << endl;
+                Node<string>* newNode = new Node<string>{ tmp };
+                //addAtEndList(head, newNode);
+                if (possibleInsert(arr[possibleInsertList])) {
+                    insertNodeAtEnd(arr, possibleInsertList, newNode);
+                }
+                else {
+                    possibleInsertList++;
+                    if (possibleInsertList >= arrSize) { // хватает ли динамического массива
+                        resizeArr(arr); // ресайз
+                    }
+                    insertNodeAtEnd(arr, possibleInsertList, newNode);
+                }
+            }
+            fin.peek(); // проверка на конец файла
+        }
+
+        fin.close();
     }
     void writeToTxtANSI(Node<string>** arr) {
         string fName;
