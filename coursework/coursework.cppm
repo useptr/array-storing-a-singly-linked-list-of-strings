@@ -52,7 +52,10 @@ int main()
 	
 	/*Node<string>* node1 = new Node<string>{ "Строка 1" };
 	Node<string>* node2 = new Node<string>{ "Строка 2" };
-	addAtEndList(node1, node2);
+	if (*node1 < *node2) {
+		cout << "Da";
+	}*/
+	/*addAtEndList(node1, node2);
 	Node<string>* node3 = new Node<string>{ "Строка 3" };
 	addAtEndList(node1, node3);
 	Node<string>* node4 = new Node<string>{ "Строка 4" };
@@ -63,10 +66,13 @@ int main()
 
 	//Node<string>* head = nullptr;
 
-	int ch = 0;
+	int ch = 0; bool debug = true;
 	while (ch != 27) {
 		system("cls");
-		showArr(arr);
+		cout << "d - выводить весь список по умолчанию: "; if (debug) { cout << "true"; } else { cout << "false"; } cout << endl;
+		if (debug) { showArr(arr); }			
+		
+		
 		cout << "0 - загрузка строк из txt(ANSI) файла" << endl;
 		cout << "1 - сохранение строк в txt(ANSI) файл" << endl;
 		cout << "2 - загрузка строк из бинарного файла" << endl;
@@ -133,7 +139,7 @@ int main()
 		}
 		case 57: // 9
 		{
-			
+			sortArr(arr);
 			break;
 		} 
 		case 98: // b
@@ -146,15 +152,25 @@ int main()
 			showArrByN(arr);
 			break;
 		}		
+		case 100: // d
+		{
+			if (debug) {
+				debug = false;
+			}
+			else {
+				debug = true;
+			}
+			break;
+		}
 		default:
 			break;
 		}
 		system("pause");
 	}    
-	for (int i = 0; i < arrSize; ++i) { // освобождения элементов динамического массива Node
-		delete arr[i];
-	}
-	delete[] arr; // освобождения динамического массива Node
+	//for (int i = 0; i < arrSize; ++i) { // освобождения элементов динамического массива Node
+	//	delete arr[i];
+	//}
+	//delete[] arr; // освобождения динамического массива Node
 
     //cout << node1->getStr() << endl;
     //Node<string> node1{ "Строка" };

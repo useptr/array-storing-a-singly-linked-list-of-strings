@@ -6,7 +6,7 @@ import <string>;
 export namespace List {
     using namespace std;
     //setlocale(LC_ALL, "rus");
-    const unsigned int COUNT_NODE = 2; // стандартное количество узлов в списке
+    const unsigned int COUNT_NODE = 5; // стандартное количество узлов в списке
 
 
 
@@ -14,6 +14,8 @@ export namespace List {
     template <class T> ostream& operator<<(ostream&, const Node<T>&);
     template <class T> ostream& operator>>(ostream&, const Node<T>*);
     template <class T> istream& operator>>(istream&, Node<T>*);
+    template <class T> bool operator< (const Node<T>&, const Node<T>&);
+    template <class T> bool operator> (const Node<T>&, const Node<T>&);
     template <class T> class Node {
     private:
         T str_;
@@ -21,6 +23,8 @@ export namespace List {
         friend ostream& operator<< <T>(ostream&, const Node<T>&);
         friend ostream& operator<< <T>(ostream&, const Node<T>*);
         friend istream& operator>> <T>(istream&, Node<T>*);
+        friend bool operator< <T>(const Node<T>&, const Node<T>&);
+        friend bool operator> <T>(const Node<T>&, const Node<T>&);
     public:        
         Node() : next_{ nullptr } { }
         Node(T str) : str_{ str }, next_{ nullptr } { }                
@@ -63,6 +67,22 @@ export namespace List {
         getline(in, str);
         obj->setStr(str);
         return in;
+    }
+    template <class T> bool operator< (const Node<T>& lhs, const Node<T>& rhs) {
+        string str1 = lhs.getStr();
+        string str2 = rhs.getStr();
+        if (str1.compare(str2) < 0) {
+            return true;
+        }
+        return false;
+    }
+    template <class T> bool operator> (const Node<T>& lhs, const Node<T>& rhs) {
+        string str1 = lhs.getStr();
+        string str2 = rhs.getStr();
+        if (str1.compare(str2) > 0) {
+            return true;
+        }
+        return false;
     }
     template <class T>
     const T Node<T>::getStr() const {
