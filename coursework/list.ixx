@@ -6,7 +6,7 @@ import <string>;
 export namespace List {
     using namespace std;
     //setlocale(LC_ALL, "rus");
-    const unsigned int COUNT_NODE = 5; // стандартное количество узлов в списке
+    unsigned int COUNT_NODE = 5; // стандартное количество узлов в списке
 
 
 

@@ -19,20 +19,11 @@ int main()
 	using namespace pArrFunc;
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-    
 
-	/*Node<string>** pArray = nullptr;
-    
-	pArray = new Node<string>*[arrSize];
-	for (int i = 0; i < arrSize; ++i)
-	{
-		pArray[i] = new Node<string>[25];
-	}
-	for (int i = 0; i < arrSize; ++i)
-	{
-		delete[] pArray[i];
-	}
-	delete[] pArray;*/
+	List::COUNT_NODE = 5; // default
+	cout << "введите максимальное значение списка: ";
+	cin >> List::COUNT_NODE;
+	cin.ignore();
 
 	Node<string>** arr = nullptr;
 	arr = new Node<string>*[arrSize]; // инициализирование динамического массива Node
@@ -44,12 +35,7 @@ int main()
 	//for (int i = 0; i < arrSize; ++i) { // освобождения элементов динамического массива Node
 	//	delete arr[i];
 	//}
-	//delete[] arr; // освобождения динамического массива Node
-	
-
-	/*Node<string> node1{ "Строка 1" };
-	cout << node1;*/
-	
+	//delete[] arr; // освобождения динамического массива Node	
 	/*Node<string>* node1 = new Node<string>{ "Строка 1" };
 	Node<string>* node2 = new Node<string>{ "Строка 2" };
 	if (*node1 < *node2) {
@@ -64,8 +50,6 @@ int main()
 	showList(node1, id);
 	cout << id;*/
 
-	//Node<string>* head = nullptr;
-
 	int ch = 0; bool debug = true;
 	while (ch != 27) {
 		system("cls");
@@ -77,10 +61,10 @@ int main()
 		cout << "1 - сохранение строк в txt(ANSI) файл" << endl;
 		cout << "2 - загрузка строк из бинарного файла" << endl;
 		cout << "3 - сохранение строк в бинарный файл" << endl; 
-		cout << "4 - добавить строку" << endl;
-		cout << "5 - удалить строку" << endl;
-		cout << "6 - включение строки по логическому номеру" << endl;
-		cout << "7 - включение строки по логическому номеру с сохранением порядка" << endl; //
+		cout << "4 - добавить строку в конец" << endl;
+		cout << "5 - удалить последнюю строку" << endl;
+		cout << "6 - включение строки по логическому номеру с сохранением порядка" << endl;
+		cout << "7 - включение строки по логическому номеру" << endl; //
 		cout << "8 - извлечение строки по логическому номеру" << endl;
 		cout << "9 - сортировка" << endl; //
 		cout << "b - балансировка " << endl;
@@ -124,12 +108,12 @@ int main()
 		}
 		case 54: // 6
 		{
-			addInArrById(arr);
+			addInArrByIdWithOrder(arr);
 			break;
 		}
 		case 55: // 7
 		{
-			addInArrByIdWithOrder(arr);
+			addInArrById(arr);
 			break;
 		}
 		case 56: // 8
@@ -171,46 +155,5 @@ int main()
 	//	delete arr[i];
 	//}
 	//delete[] arr; // освобождения динамического массива Node
-
-    //cout << node1->getStr() << endl;
-    //Node<string> node1{ "Строка" };
-    //cout << node1.getNext() << endl;
-    //cout << node1.getStr() << endl;
-
-    //unique_ptr<int> ptr(new int()); // умные указатели bad
-    //auto ptr1(new int()); // good
-    ///*auto str = "Hello world";
-    //auto p = make_shared<int>(2);
-
-    
-	
-	/*Node<string>* objPtr = new Node<string>[COUNT_NODE];*/
-	
-
-    //Node<string>* head = new Node<string>{ "Строка 1" };
-
-    //string fName = "отрывок.txt", tmp;
-    //ifstream fin;
-    //fin.open(fName);
-    //if (!fin.is_open())
-    //{
-    //    cout << "Файл не может быть открыт или создан"; // throw
-    //    return 1;
-    //}
-
-    //while (!fin.eof()) {
-    //    getline(fin, tmp);
-    //    if (!tmp.empty()) {
-    //        //cout << tmp << endl;
-    //        Node<string>* newNode = new Node<string>{ tmp };
-    //        addAtEndList(head, newNode);
-    //    } 
-    //}
-    //
-    //fin.close();
-
-    //showList(head);
-    /*Node<string>* objPtr = static_cast<Node<string>*>(operator new[](COUNT_OBJ * sizeof(Node<string>)));
-    for (int i = 0; i < COUNT_OBJ; ++i) new (objPtr + i) Node<string>(i + 5);*/
     return 0;
 }

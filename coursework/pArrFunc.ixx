@@ -39,42 +39,94 @@ export namespace pArrFunc {
     }
 
     void balanceArr(Node<string>**& arr) {
-        // fix два последних по одному
-        int i = 0;
-        while (!possibleInsert(arr[i])) { 
-            if (i + 1 >= arrSize) { // хватает ли динамического массива
-                resizeArr(arr); // ресайз
-                possibleInsertList++;
-            }
-
-            unsigned int counter = 1;
-            Node<string>* tmp = arr[i];
-            Node<string>* prev = tmp;
-            while (tmp->getNext() != nullptr) {
-                counter++;
-                prev = tmp;
-                tmp = tmp->getNext();
-                if (counter > List::COUNT_NODE) { // все лишние узлы перемещаем в начало следуещего списка
-                    prev->setNext(nullptr); // узлы по счёту равному COUNT_NODE обнуляем указатель
-                    Node<string>* tmpHead = new Node<string>;
-                    if (i + 1 >= arrSize) { // хватает ли динамического массива
-                        resizeArr(arr); // ресайз
-                        possibleInsertList++;
-                    }
-                    tmpHead = arr[i + 1];
-                    arr[i + 1] = tmp;
-                    while (tmp->getNext() != nullptr) { // идём до самого последнего лишнего узла
-                        prev = tmp;
-                        tmp = tmp->getNext();
-                    }
-                    tmp->setNext(tmpHead); // устанавливаем самому последнему лишнему узлу next_ = tmpHead (arr[i+1])
-
-                    break;
+        unsigned int listCounter = 1, nodeCounter = 1;
+        for (int i = 0; i <= possibleInsertList; ++i) {            
+            Node<string>* node = arr[i]; // получили текущий элемент  
+            if (i != 0) { nodeCounter++; listCounter++; }
+            while (node != nullptr) { // проходимся по списку и получаем его nodeCounter
+                node = node->getNext();
+                if (node != nullptr) {
+                    nodeCounter++;
                 }
-
-            }
-            i++;
+            }            
         }
+        
+        unsigned int nListLength = nodeCounter/ listCounter;
+        while (nListLength * listCounter < nodeCounter) {
+            nListLength++;
+        }
+        
+        Node<string>** tArr = new Node<string>*[nodeCounter]; // инициализирование динамического массива Node
+        for (int i = 0; i < nodeCounter; ++i) {
+            tArr[i] = new Node<string>;
+            // считывание в массив из файла
+        }
+
+        int c = 0;
+        for (int i = 0; i <= possibleInsertList; ++i) { // скопировали структуру в массив
+            Node<string>* node = arr[i];  
+            tArr[c]->setStr(arr[i]->getStr()); c++;
+            arr[i]->setStr("");
+            Node<string>* prevNode = node;
+            while (node != nullptr) { 
+                prevNode = node;
+                node = node->getNext();
+                if (node != nullptr) {
+                    tArr[c]->setStr(node->getStr()); c++;
+                }                
+                if (prevNode != arr[i]) {
+                    delete prevNode;
+                }
+            }
+            arr[i]->setNext(nullptr);
+        }
+        c = 0;
+        for (int i = 0; i < listCounter; ++i) {
+            if (c == nodeCounter) { break; }
+            arr[i]->setStr(tArr[c]->getStr()); c++;
+            Node<string>* node = arr[i];            
+            for (int j = 1; j < nListLength; ++j) {
+                if (c == nodeCounter) { break; }
+                Node<string>* newNode = new Node(tArr[c]->getStr()); c++;
+                node->setNext(newNode);
+                node = node->getNext();
+                
+            }
+        }
+        for (int i = 0; i < nodeCounter; ++i) { // освобождения элементов динамического массива Node
+    	    delete tArr[i];
+        }
+        delete[] tArr;
+        // если в списке меньше nListLength вставляем из следующего, если больше вставляем в следующий
+        //for (int i = 0; i <= possibleInsertList; ++i) {
+        //    Node<string>* node = arr[i]; // получили текущий элемент  
+        //    Node<string>* prevNode = node;
+        //    unsigned int сounter = 1;
+        //    while (node != nullptr) { // проходимся по списку и получаем его nodeCounter
+        //        prevNode = node;
+        //        node = node->getNext();
+        //        if (node != nullptr) {
+        //            сounter++;
+        //        }
+        //        if (сounter > nListLength) {
+        //            prevNode->setNext(nullptr);
+        //            if (i+1 >= arrSize) {
+        //                resizeArr(arr);
+        //            }
+        //            Node<string>* oldHead = arr[i+1];
+        //            arr[i + 1] = node;
+        //            while (node->getNext() != nullptr) {
+        //                node = node->getNext();
+        //            }
+        //            node->setNext(oldHead);
+        //            //showArr(arr);
+        //            break;
+        //        }
+        //    }
+        //    if (сounter < nListLength) {
+        //        // не смог реализовать
+        //    }
+        //}
     }
     void addAtArr(Node<string>** &arr) {
         Node<string>* newNode = new Node<string>;
@@ -91,21 +143,34 @@ export namespace pArrFunc {
             insertNodeAtEnd(arr, possibleInsertList, newNode);
         }        
     }   
-    void addInArrByIdWithOrder(Node<string>**& arr) {
+    void addInArrById(Node<string>**& arr) {
         Node<string>* newNode = new Node<string>;
         cout << "Введите str_: ";
-        cin >> newNode;
+        cin >> newNode; // проверка на пустую строку
         unsigned int insertId = 0; unsigned int nowId = 0;
         cout << "Введите id: ";
         cin >> insertId;
         cin.ignore(); // разрешения конфликта cin и getline
-        // вставляем новый узел, сдвигаем всю структуру
-
-        int i = 0; bool hit = false;
+        
+        unsigned int nodeCounter = 1;
         for (int i = 0; i <= possibleInsertList; ++i) {
-            Node<string>* node = arr[i];
+            Node<string>* node = arr[i]; // получили текущий элемент  
+            if (i != 0) { nodeCounter++; }
+            while (node != nullptr) { // проходимся по списку и получаем его nodeCounter
+                node = node->getNext();
+                if (node != nullptr) {
+                    nodeCounter++;
+                }
+            }
+        }
+
+        bool hit = false;
+        for (int i = 0; i <= possibleInsertList; ++i) {
+            Node<string>* node = arr[i]; // получили текущий элемент
+            Node<string>* prevNode = node;
+            unsigned int сounter = 1;
             if (i > 0) { nowId++; }
-            while (node != nullptr) { // цикл по заголовкам списков                
+            while (node != nullptr) {
                 if (nowId == insertId) {
                     hit = true;
                 }
@@ -114,23 +179,81 @@ export namespace pArrFunc {
                     node->setStr(newNode->getStr());
                     newNode->setStr(tmp);
                 }
+                prevNode = node;
                 node = node->getNext();
-                nowId++;
+                if (node != nullptr) {
+                    сounter++;
+                }
+                if (node != nullptr) {
+                    nowId++;
+                }
+                
             }
+            if (nowId - сounter + 1 + List::COUNT_NODE >= insertId) {
+                if (сounter < List::COUNT_NODE) {
+                    //if () {}
+                    if (!prevNode->getStr().empty()) {
+                        if (prevNode != node) {
+                            prevNode->setNext(newNode);
+                            return;
+                        }
+                    }
+                }
+            }
+            
         }
+        //int i = 0; bool hit = false;
+        //for (int i = 0; i <= possibleInsertList; ++i) {
+        //    Node<string>* node = arr[i];
+        //    if (i > 0) { nowId++; }
+        //    while (node != nullptr) { // цикл по заголовкам списков                
+        //        if (nowId == insertId) {
+        //            hit = true;
+        //        }
+        //        if (hit) {
+        //            string tmp = node->getStr();
+        //            node->setStr(newNode->getStr());
+        //            newNode->setStr(tmp);
+        //        }
+        //        node = node->getNext();
+        //        nowId++;
+        //    }
+        //}
+        /*if (insertId == 1 && arr[0]->getStr().empty()) {
+            cout << "id должен быть не меньше 0 и не больше " << nowId-1 << endl;
+            return;
+        }*/
+        /*if (nowId < List::COUNT_NODE) {
+            if (nowId!=0) {
+                nowId--;
+            }
+        }*/
+        /*if (nowId == 1 && arr[0]->getStr().empty() && arr[0]->getNext() == nullptr) {
+            cout << "id должен быть не меньше 0 и не больше 0" << endl;
+            return;
+        }*/
+        if (hit || nowId == insertId) {
+            if (possibleInsert(arr[possibleInsertList])) {
+                insertNodeAtEnd(arr, possibleInsertList, newNode);
+            }
+            else {
+                possibleInsertList++;
+                if (possibleInsertList >= arrSize) { // хватает ли динамического массива
+                    resizeArr(arr); // ресайз
+                }
+                insertNodeAtEnd(arr, possibleInsertList, newNode);
+            }
+        } else {
+            //if (nowId == )
+            cout << "id должен быть не меньше 0 и не больше " << nowId << endl;
 
-        if (possibleInsert(arr[possibleInsertList])) {
-            insertNodeAtEnd(arr, possibleInsertList, newNode);
-        }
-        else {
-            possibleInsertList++;
-            if (possibleInsertList >= arrSize) { // хватает ли динамического массива
-                resizeArr(arr); // ресайз
-            }
-            insertNodeAtEnd(arr, possibleInsertList, newNode);
         }
     }
     void delInArrById(Node<string>** &arr) {
+        if (arr[0]->getStr().empty() && arr[0]->getNext() == nullptr) {
+            cout << "нечего извлекать" << endl;
+            return;
+        }
         unsigned int delId = 0; unsigned int nowId = 0;
         cout << "Введите id: ";
         cin >> delId;
@@ -169,39 +292,56 @@ export namespace pArrFunc {
                 }                
             }
         }
-        cout << "id должен быть не меньше 0 и не больше " << nowId+1 << endl;
+        cout << "id должен быть не меньше 0 и не больше " << nowId-1 << endl;
     }
 
-    void addInArrById(Node<string>**& arr) {
+    void addInArrByIdWithOrder(Node<string>**& arr) {
+        int ch = 0;
+        cout << "при выплнении этой функции структура будет отсортирована, если хотите продолжить нажмите любую клавишу кроме - Esc" << endl;
+        ch = _getch();
+        if (ch == 27) {
+            return;
+        }
+        
         Node<string>* newNode = new Node<string>;
         cout << "Введите str_: ";
         cin >> newNode;
 
-        unsigned int insertId = 0; unsigned int nowId = 0;
-        cout << "Введите id: ";
-        cin >> insertId;
-        cin.ignore();
-
-        for (int i = 0; i <= possibleInsertList; ++i) {
-            if (insertNodeById(arr, i, insertId, nowId, newNode)) {
-                return;
-            }
-        }
-        if (insertId == nowId + 1) {
-            if (possibleInsert(arr[possibleInsertList])) {
-                insertNodeAtEnd(arr, possibleInsertList, newNode);
-            }
-            else {
-                possibleInsertList++;
-                if (possibleInsertList >= arrSize) { // хватает ли динамического массива
-                    resizeArr(arr); // ресайз
-                }
-                insertNodeAtEnd(arr, possibleInsertList, newNode);
-            }
+        if (possibleInsert(arr[possibleInsertList])) {
+            insertNodeAtEnd(arr, possibleInsertList, newNode);
         }
         else {
-            cout << "id должен быть не меньше 0 и не больше " << nowId + 1 << endl;
+            possibleInsertList++;
+            if (possibleInsertList >= arrSize) { // хватает ли динамического массива
+                resizeArr(arr); // ресайз
+            }
+            insertNodeAtEnd(arr, possibleInsertList, newNode);
         }
+        sortArr(arr);
+        
+        //for (int i = 0; i <= possibleInsertList; ++i) {
+        //    Node<string>* node = arr[i]; // получили текущий элемент
+        //    while (node != nullptr) {                
+        //            if (*node > *newNode) {
+        //                string tmp = node->getStr();
+        //                node->setStr(newNode->getStr());
+        //                newNode->setStr(tmp);
+        //            }
+        //            node = node->getNext();
+        //    
+        //    }
+        //}
+        //
+        //if (possibleInsert(arr[possibleInsertList])) {
+        //    insertNodeAtEnd(arr, possibleInsertList, newNode);
+        //}
+        //else {
+        //    possibleInsertList++;
+        //    if (possibleInsertList >= arrSize) { // хватает ли динамического массива
+        //        resizeArr(arr); // ресайз
+        //    }
+        //    insertNodeAtEnd(arr, possibleInsertList, newNode);
+        //}
 
     }
     void delInArr(Node<string>** arr) {
