@@ -3,13 +3,16 @@ import <iostream>;
 import <string>;
 import <fstream>;
 import <conio.h>;
+import <limits>;
 import list;
 import pArrFunc;
 //using namespace std;
 //import func;
 //using std::cout;
 //using std::unique_ptr;
-
+#if defined(max)
+#undef max
+#endif
 
 int main()
 {
@@ -20,10 +23,19 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
-	List::COUNT_NODE = 5; // default
-	cout << "введите максимальное значение списка: ";
-	cin >> List::COUNT_NODE;
-	cin.ignore();
+	List::COUNT_NODE = 0; // default 5
+	while (List::COUNT_NODE < 3) {
+		system("cls");
+		cout << "введите максимальное значение списка(не меньше 3): ";
+		cin >> List::COUNT_NODE;
+		cin.ignore();
+		if (!cin) {
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cin.clear();
+			cin.get();
+		}
+	}
+	
 
 	Node<string>** arr = nullptr;
 	arr = new Node<string>*[arrSize]; // инициализирование динамического массива Node

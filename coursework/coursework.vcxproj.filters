@@ -18,13 +18,13 @@
     <ClCompile Include="coursework.cppm">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="list.ixx">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="func.ixx">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="pArrFunc.ixx">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="list.ixx">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
